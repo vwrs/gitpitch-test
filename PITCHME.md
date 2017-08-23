@@ -158,7 +158,7 @@ RP-treeベースのアルゴリズム．
 
 エッジの重みは，t-SNEと同様のアプローチ
 
-$$p_{j|i} = \frac{\exp(-||\vec{x}_i-\vec{x}_j||^2 / 2\sigma_i^2)}{\sum_{(i,k) \in E}\exp(-||\vec{x}_i-\vec{x}_k||^2 / 2\sigma_i^2)}$$
+$$p_{j|i} = \frac{\exp\left(-||\vec{x}_i-\vec{x}_j||^2 / 2\sigma_i^2\right)}{\sum_{(i,k) \in E} \exp\left(-||\vec{x}_i-\vec{x}_k||^2 / 2\sigma_i^2\right)}$$
 and
 $$p_{i|i} = 0$$
 
