@@ -11,19 +11,10 @@ t-SNEの欠点:
 
 ---
 
-数式テスト
-
-$x$
-$$\sum^n_i x_i$$
-$$$\sum^n_i x_i$$$
-$$\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}$$
-
----
-
 ## contributions
 - 数百万，数百次元のデータでも計算できる可視化手法の提案
 - 高次元，大規模データに対する効率的なK近傍グラフの構築をした
-- グラフの可視化のための確率モデルの提案．目的関数は非同期SGDで効率的に最適化できる．時間複雑度$$O(N)$$，t-SNEは$$O(N\log N)$$
+- グラフの可視化のための確率モデルの提案．目的関数は非同期SGDで効率的に最適化できる．時間複雑度$O(N)$，t-SNEは$O(N\log N)$
 - 実データにおけるt-SNEとのパフォーマンス比較
 
 ---
@@ -33,15 +24,21 @@ random projection tree(RP-tree)に基づくアルゴリズムを提案．元よ�
 
 グラフ構造の可視化にはほとんどはよくある次元削減の方法か，force-directedな方法を使う
 うまく可視化できるのはforce-directedな方法だが，計算コストが高い．
-これらの手法一覧:
-- 古典的なfruchterman-Reingo $$O(N^2)$$
-- ForceAtlas  $$O(N^2)$$
-- ForceAtlas2 $$O(N\log N)$$
-- Openord $$O(N\log N)$$
 
++++
+force-directedな手法一覧:
+- 古典的なfruchterman-Reingo $O(N^2)$
+- ForceAtlas  $O(N^2)$
+- ForceAtlas2 $O(N\log N)$
+- Openord $O(N\log N)$
 
-著者が以前提案したネットワークorグラフのembedding手法であるLINE modelとも関係している.
-Skip-gramとか
+---
+## 余談
+
+各種embeddingの手法を適用して100次元程度に落としてからlargeVisを適用するのもあり！
+- [LINE: Large-scale information network embedding](https://github.com/tangjianpku/LINE):
+  - 著者が以前提案したネットワークorグラフのembedding手法
+- Skip-gram
 
 ---
 
