@@ -22,26 +22,27 @@ Visualizing Large-scale and High-dimensional Data
 +++
 ## t-SNEの欠点
 - K最近傍グラフの構築にvantage-point treeを使っており，計算コストが高い
-- グラフの可視化ステップにおいてもデータ数に比例して効率が悪くなる |
-- 異なるデータに対する最適なパラメータが大きく異なる．パラメータに敏感 |
+- グラフの可視化ステップにおいてもデータ数に比例して効率が悪くなる
+- パラメータに敏感．異なるデータに対する最適なパラメータが大きく異なる．
 
-**→これらを主に改善したのがLargeVis.** $O(N\log N)$ |
+**→これらを主に改善したのがLargeVis.** $O(N\log N)$
 
 ---
 
 ## contributions
-- 数百万，数百次元のデータでも計算できる可視化手法の提案
-- 高次元，大規模データに対する効率的なK最近傍グラフの構築をした
+- サンプル数数百万x数百次元のデータでも現実的に計算可能
+- 高次元，大規模データに対する効率的なK最近傍(K-NN)グラフの構築をした
+- パラメータの敏感さを解消
 - グラフの可視化のための確率モデルの提案．
-  - 目的関数は非同期SGDで効率的に最適化できる．
-  - 時間複雑度 $O(N)$，t-SNEは $O(N\log N)$
+  - 目的関数は非同期SGDで効率的に最適化
+    - 時間複雑度 $O(N)$，t-SNEは $O(N\log N)$
 - 実データにおけるt-SNEとのパフォーマンス比較
 
 ---
 
 ## 大まかな流れ
 1. データ(例えば高次元の特徴ベクトル)を用意
-2. 距離(euclid)を計算して，K最近傍グラフを構築
+2. 距離(euclid)を計算して，**K最近傍グラフを構築**
 3. グラフの可視化を行う
 
 ![typical pipeline of data visualization](assets/pipeline.png)
@@ -50,12 +51,40 @@ Visualizing Large-scale and High-dimensional Data
 
 ---
 
-## k-NN graphの構築
+## k最近傍グラフの構築
+データ数$N$, 次元数$d$
+- 正確に計算しようとすると， $O(N^2d)$
+
+既存手法は大きく3つのカテゴリに分類できる
+- space-partitioning trees
+- locality sensitive hashing techniques
+- neighbor exploring techniques
+
++++
+## space-partitioning trees
+- 全空間を木で幾つかの領域に分けていく
+- 一度木が構築できれば，あとはたどるだけでK-NNグラフは構築できる！
+
+![BSP tree](assets/bsp-tree.gif)
+
++++
+一度木が構築できれば，あとはたどるだけでK-NNグラフは構築できる！
+e.g.
+- k-d trees
+- vp-trees
+- cover trees
+- random projection trees
+
+
++++
+## 結局アルゴリズムは？
 Random Projection tree(RP-tree)に基づくアルゴリズムを提案．
 
 元のアルゴリズムより近傍の探索方法を工夫している．
 
-グラフ構造の可視化:
+---
+
+## グラフの可視化
 - よくある次元削減の方法(PCAからt-SNEとか)
 - force-directedな方法
 
@@ -79,4 +108,9 @@ force-directedな手法:
 
 ---
 
-おわり
+APPENDIX
+
+---
+## 参考
+- [Visualizing Large-scale and High-dimensional Data](https://arxiv.org/abs/1602.00370)
+- [Ray tracing with BSP and Rope trees](http://old.cescg.org/CESCG-2000/JKrivanek/index.html)
