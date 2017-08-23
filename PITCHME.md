@@ -16,7 +16,7 @@ Visualizing Large-scale and High-dimensional Data
     - PCA, MDS ... 線形なので実データにはあまり向かないことが多い
   - 非線形な手法
     - Isomap, LLE, Laplacian Eigenmaps等 ... 小規模なデータには良い結果を示すが，高次元の実データに対してはglobal,localな構造をよく表現できないことが多い |
-    - t-SNEは上に比べると**global,localな構造を両方保っている** |
+    - t-SNEは上に比べるとglobal,localな構造を両方保っている |
 
 +++
 ### GlobalとLocal
@@ -26,8 +26,9 @@ Visualizing Large-scale and High-dimensional Data
 
 +++
 #### 非線形手法の欠点
-- 高次元(100次元以上)のデータに対して，多様体上での局所線形性の仮定が崩れるため，良い結果は得られない
+- 高次元(100次元以上)のデータに対しては，多様体上での局所線形性の仮定が崩れるため，良い結果は得られない
   - Isomap, LLE, t-SNE等
+
 +++
 ### t-SNE
 - local,global構造を共に保てる．メジャーな既存手法と比べて実験的に良い結果が得られている
@@ -42,11 +43,11 @@ Visualizing Large-scale and High-dimensional Data
 +++
 ![k-nn graph](assets/k-nn-graph.png)
 
-- K最近傍グラフの構築方法は様々な近似手法がある(後述)
+- K最近傍(K-NN)グラフの構築方法は様々な近似手法がある(後述)
 
 +++
 #### LargeVisからみたt-SNEの欠点
-- K最近傍グラフの構築にvantage-point tree(vp-tree)を使っており，計算コストが高い
+- K最近傍(K-NN)グラフの構築にvantage-point tree(vp-tree)を使っており，計算コストが高い
 - グラフの可視化ステップにおいてもデータ数に比例して効率が悪くなる
 - パラメータに敏感．異なるデータに対する最適なパラメータが大きく異なる
 
@@ -66,9 +67,9 @@ Visualizing Large-scale and High-dimensional Data
 ---
 
 ### 可視化までの手順(t-SNEと同様)
-1. データ(例えば高次元の特徴ベクトル)を用意
+1. データ(高次元の特徴ベクトル)を用意
 2. 距離を計算して，**K-NNグラフを構築**
-3. グラフの可視化を行う
+3. グラフ構造を2,3次元にマッピングして可視化を行う
 
 ![typical pipeline of data visualization](assets/pipeline.png)
 
@@ -78,20 +79,14 @@ Visualizing Large-scale and High-dimensional Data
 データ数$N$, 次元数$d$
 - 正確に計算しようとすると， $O(N^2d)$
 
-既存手法は大きく3つのカテゴリに分類できる
+既存手法(最近傍探索法)は大きく3つに分類できる
 - space-partitioning trees
-- locality sensitive hashing techniques
+- Locality Sensitive Hashing(LSH)
 - neighbor exploring techniques
 
 +++
 ## space-partitioning trees
-- 全空間を木で幾つかの領域に分けていく
-- 一度木が構築できれば，あとはたどるだけでK-NNグラフは構築できる！
-
-![BSP tree](assets/bsp-tree.gif)
-
-+++
-一度木が構築できれば，あとはたどるだけでK-NNグラフは構築できる！
+- 空間を木で幾つかの領域に分けていく
 
 e.g.,
 - k-d trees
@@ -99,27 +94,69 @@ e.g.,
 - cover trees
 - **Random Projection trees(RP-trees)**
 
++++
+- 空間を木で幾つかの領域に分けていく
+- 一度木が構築できれば，あとはたどるだけでK-NNグラフは構築できる！
+
+![BSP tree](assets/bsp-tree.gif)
 
 +++
-#### 結局アルゴリズムは？
+### Locality Sensitive Hashing(LSH)
+局所性鋭敏型ハッシュ
+
+ある距離尺度で類似度の高い点は同じグループになる確率が高く，
+そうでない場合は異なるグループになる確率が高くなるようにする
+
+![LSH](assets/lsh.jpg)
+
++++
+### neighbor exploring
+NN-Descentが有名．
+
+あるデータ点において，「近傍の近傍もまた近傍である可能性が高い」ことを利用している．
+
++++
+### 何の手法が良いのか？
+これらの手法のベンチマークをとった人がいる．
+
+![benchmarks](https://camo.githubusercontent.com/0b3f231ef63de08ad8421fd15f42d0c0ea8fa6db/68747470733a2f2f7261772e6769746875622e636f6d2f6572696b6265726e2f616e6e2d62656e63686d61726b732f6d61737465722f726573756c74732f676c6f76652e706e67)
+https://github.com/erikbern/ann-benchmarks
+
+ここによると，random projection tree(RP-tree)が高次元データに対して計算コスト，精度共に優れている．
+
++++
+### 結局アルゴリズムは？
 RP-treeベースのアルゴリズム．
-- 距離はeuclid
+- 距離はeuclid?
 - 元のアルゴリズムより近傍の探索方法を工夫している．
 
 ---
 
 ## グラフの可視化
 - よくある次元削減の方法(PCAからt-SNEとか)
-- force-directedな方法
+- force-directed(力学モデルによるグラフ描画)
 
-うまく可視化できるのはforce-directed(力指向)な方法だが，計算コストが高い．
+うまく可視化できるのはforce-directedな方法だが，計算コストが高い．
 
 +++
-force-directedな手法:
-- fruchterman-Reingo $O(N^2)$
+#### force-directedな手法
+
+...各ノードに力学的エネルギーが加わるとしてそれが安定する位置を探す
+
+e.g.,
+- fruchterman-Reingold $O(N^2)$
 - ForceAtlas  $O(N^2)$
 - ForceAtlas2 $O(N\log N)$
 - Openord $O(N\log N)$
+
++++
+#### force-directedな手法
+
+...各ノードに力学的エネルギーが加わるとしてそれが安定する位置を探す
+
+- Fruchterman-Reingoldアルゴリズム(古典的手法)の適用例
+
+![graph-before-after](assets/graph-visualization.png)
 
 ---
 ## 余談
@@ -142,3 +179,5 @@ APPENDIX
 - [Ray tracing with BSP and Rope trees](http://old.cescg.org/CESCG-2000/JKrivanek/index.html)
 - [t-SNEの解説スライド](https://www.slideshare.net/t_koshikawa/visualizing-data-using-tsne-56773191)
 - [スペクトラルクラスタリングの話](http://d.hatena.ne.jp/mr_r_i_c_e/20121214/1355499195)
+- [グラフを奇麗に描画するアルゴリズム](https://www.slideshare.net/mfumi/fruchterman-reingold)
+- [LSH.9 Locality-sensitive hashing: how it works](https://www.youtube.com/watch?v=Arni-zkqMBA)
