@@ -77,8 +77,15 @@ Visualizing Large-scale and High-dimensional Data
 
 ## K-NNグラフの構築
 データ数$N$, 次元数$d$
-- 正確に計算しようとすると， $O(N^2d)$
 
+- 通常は全てのデータ点同士の距離を計算しなければならない．この場合の計算コストは $O(N^2d)$
+  →なんとかしたい！
+  →K−NNグラフを使う
+   - 正確に計算しようとすると，結局 $O(N^2d)$
+   - 近似手法がいくつかある
+
++++
+# K-NNグラフの構築
 既存手法(最近傍探索法)は大きく3つに分類できる
 - space-partitioning trees
 - Locality Sensitive Hashing(LSH)
@@ -102,8 +109,6 @@ e.g.,
 
 +++
 ### Locality Sensitive Hashing(LSH)
-局所性鋭敏型ハッシュ
-
 ある距離尺度で類似度の高い点は同じグループになる確率が高く，
 そうでない場合は異なるグループになる確率が高くなるようにする
 
@@ -119,27 +124,53 @@ NN-Descentが有名．
 ### 何の手法が良いのか？
 これらの手法のベンチマークをとった人がいる．
 
-![benchmarks](https://camo.githubusercontent.com/0b3f231ef63de08ad8421fd15f42d0c0ea8fa6db/68747470733a2f2f7261772e6769746875622e636f6d2f6572696b6265726e2f616e6e2d62656e63686d61726b732f6d61737465722f726573756c74732f676c6f76652e706e67)
 https://github.com/erikbern/ann-benchmarks
 
-ここによると，random projection tree(RP-tree)が高次元データに対して計算コスト，精度共に優れている．
++++
+
+![benchmarks](https://camo.githubusercontent.com/0b3f231ef63de08ad8421fd15f42d0c0ea8fa6db/68747470733a2f2f7261772e6769746875622e636f6d2f6572696b6265726e2f616e6e2d62656e63686d61726b732f6d61737465722f726573756c74732f676c6f76652e706e67)
+
++++
+### 何の手法が良いのか？
+これらの手法のベンチマークをとった人がいる．
+
+https://github.com/erikbern/ann-benchmarks
+→random projection tree(RP-tree)が高次元データに対して計算コスト，精度共に優れている．
+
++++
+#### 精度と計算コストのトレードオフ
+- 木の数を増やせば精度は上がるが，計算コストも大きくなる
+- そのまで木の数を増やさずに，精度を上げたい
+  →近傍探索(neighbor exploring)のテクニックを使う！
 
 +++
 ### 結局アルゴリズムは？
 RP-treeベースのアルゴリズム．
-- 距離はeuclid?
-- 元のアルゴリズムより近傍の探索方法を工夫している．
+- 距離はeuclid
+- 近傍探索のテクニックを利用
+  - 基本の考え方は「近傍の近傍もまた近傍である可能性が高い」
+  - まず少ない木の数でK−NNグラフを構築→近傍の近傍(新たな近傍の候補)を探していく(反復計算)
+  - 数回のイテレーションで精度はほぼ100%
 
++++
+### K-NNグラフの構築
+
+エッジの重みは，t-SNEと同様のアプローチ
+
+
+$$p_{j|i} = \frac{\exp(-||\vec{x}_i-\vec{x}_j||^2 / 2\sigma_i^2)}{\sum_{(i,k)\in E}\exp(-||\vec{x}_i-\vec{x}_k||^2/2\sigma_i^2)}$$
+$$p_{i|i} = 0$$
+$$w_{ij} = \frac{p_{j|i}+p_{i|j}}{2N}$$
 ---
 
 ## グラフの可視化
 - よくある次元削減の方法(PCAからt-SNEとか)
 - force-directed(力学モデルによるグラフ描画)
 
-うまく可視化できるのはforce-directedな方法だが，計算コストが高い．
+うまく可視化できるのは力学モデルによる方法だが，計算コストが高い．
 
 +++
-#### force-directedな手法
+#### 力学モデル
 
 ...各ノードに力学的エネルギーが加わるとしてそれが安定する位置を探す
 
@@ -150,7 +181,7 @@ e.g.,
 - Openord $O(N\log N)$
 
 +++
-#### force-directedな手法
+#### 力学モデル
 
 ...各ノードに力学的エネルギーが加わるとしてそれが安定する位置を探す
 
