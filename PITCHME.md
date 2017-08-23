@@ -8,29 +8,32 @@ Visualizing Large-scale and High-dimensional Data
 
 ## 背景
 - **大規模，高次元データを2or3次元空間に射影して可視化したい！**
-- 次元削減手法は色々あるが，どれもいまいち．
+- 次元削減手法は色々あるが，どれも大規模，高次元データに対してはいまいち．
 
 +++
-## メジャーな次元削減手法
+## 既存手法
   - 線形の手法
     - PCA, MDS ... 線形なので実データにはあまり向かないことが多い
   - 非線形な手法
-    - Isomap, LLE, Laplacian Eigenmaps等 ... 小規模なデータには良い結果を示すが，高次元の実データを扱う際は局所的，大域的な構造をよく表現できないことが多い(？) |
-    - t-SNEは局所的，及び大域的な構造を捉えてられている(?) |
-
+    - Isomap, LLE, Laplacian Eigenmaps等 ... 小規模なデータには良い結果を示すが，高次元の実データに対してはglobal,localな構造をよく表現できないことが多い |
+    - t-SNEは上に比べると**global,localな構造を両方保っている** |
 
 +++
-## t-SNEの欠点
+### t-SNE
+![global-local](assets/global-local.png)
+
++++
+### t-SNEの欠点
 - K最近傍グラフの構築にvantage-point treeを使っており，計算コストが高い
 - グラフの可視化ステップにおいてもデータ数に比例して効率が悪くなる
 - パラメータに敏感．異なるデータに対する最適なパラメータが大きく異なる．
 
-**→これらを主に改善したのがLargeVis.** $O(N\log N)$
+**→これらを主に改善したのがLargeVis.**
 
 ---
 
 ## contributions
-- サンプル数数百万x数百次元のデータでも現実的に計算可能
+- 数百万x数百次元のデータでも現実的に計算可能
 - 高次元，大規模データに対する効率的なK最近傍(K-NN)グラフの構築をした
 - パラメータの敏感さを解消
 - グラフの可視化のための確率モデルの提案．
@@ -42,16 +45,14 @@ Visualizing Large-scale and High-dimensional Data
 
 ## 大まかな流れ
 1. データ(例えば高次元の特徴ベクトル)を用意
-2. 距離(euclid)を計算して，**K最近傍グラフを構築**
+2. 距離を計算して，**K-NNグラフを構築**
 3. グラフの可視化を行う
 
 ![typical pipeline of data visualization](assets/pipeline.png)
 
-
-
 ---
 
-## k最近傍グラフの構築
+## K-NNグラフの構築
 データ数$N$, 次元数$d$
 - 正確に計算しようとすると， $O(N^2d)$
 
@@ -69,18 +70,19 @@ Visualizing Large-scale and High-dimensional Data
 
 +++
 一度木が構築できれば，あとはたどるだけでK-NNグラフは構築できる！
-e.g.
+
+e.g.,
 - k-d trees
 - vp-trees
 - cover trees
-- random projection trees
+- **Random Projection trees(RP-trees)**
 
 
 +++
-## 結局アルゴリズムは？
-Random Projection tree(RP-tree)に基づくアルゴリズムを提案．
-
-元のアルゴリズムより近傍の探索方法を工夫している．
+#### 結局アルゴリズムは？
+RP-treeベースのアルゴリズム．
+- 距離はeuclid
+- 元のアルゴリズムより近傍の探索方法を工夫している．
 
 ---
 
@@ -114,3 +116,4 @@ APPENDIX
 ## 参考
 - [Visualizing Large-scale and High-dimensional Data](https://arxiv.org/abs/1602.00370)
 - [Ray tracing with BSP and Rope trees](http://old.cescg.org/CESCG-2000/JKrivanek/index.html)
+- [t-SNEの解説スライド](https://www.slideshare.net/t_koshikawa/visualizing-data-using-tsne-56773191)
