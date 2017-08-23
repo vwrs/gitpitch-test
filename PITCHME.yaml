@@ -9,7 +9,7 @@ theme-override: assets/css/xxx.css
 theme : moon
 vertical-center : false
 slide-number : true
-mathjax : TeX-MML-AM_HTMLorMML-full
+mathjax : TeX-MML-AM_HTML
 
 # Google Analytics
 # gatoken : xx-xxxxxx-x
