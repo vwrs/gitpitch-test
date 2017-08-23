@@ -1,1 +1,15 @@
+# Transition: convex, concave, default, fade, none, slide, zoom
+transition : fade
+footnote : "2017/08/24 第2回布置ゼミ"
+
+# Custom CSS
+theme-override: assets/css/xxx.css
+
+# Theme: black, moon, night, beige, sky, white
+theme : moon
+vertical-center : false
+slide-number : true
 mathjax : TeX-MML-AM_HTMLorMML-full
+
+# Google Analytics
+# gatoken : xx-xxxxxx-x
