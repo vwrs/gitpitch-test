@@ -156,9 +156,10 @@ RP-treeベースのアルゴリズム．
 +++
 ### K-NNグラフの構築
 
-エッジの重みは，t-SNEと同様のアプローチ$\vec{x}$
+エッジの重みは，t-SNEと同様のアプローチ
 
-$$p_{j|i} = \frac{\exp(-||\vec{x}_i-\vec{x}_j||^2 / 2\sigma_i^2)}{\sum_{(i,k)\in E}\exp(-||\vec{x}_i-\vec{x}_k||^2/2\sigma_i^2)}$$
+$$p_{j|i} = \frac{\exp(-||\vec{x}_i-\vec{x}_j||^2 / 2\sigma_i^2)}
+{\sum_{(i,k) \in E}\exp(-||\vec{x}_i-\vec{x}_k||^2 / 2\sigma_i^2)}$$
 
 $$p_{i|i} = 0$$
 
