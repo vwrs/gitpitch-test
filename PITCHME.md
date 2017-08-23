@@ -85,7 +85,7 @@ Visualizing Large-scale and High-dimensional Data
    - 近似手法がいくつかある
 
 +++
-# K-NNグラフの構築
+## K-NNグラフの構築
 既存手法(最近傍探索法)は大きく3つに分類できる
 - space-partitioning trees
 - Locality Sensitive Hashing(LSH)
@@ -141,6 +141,7 @@ https://github.com/erikbern/ann-benchmarks
 #### 精度と計算コストのトレードオフ
 - 木の数を増やせば精度は上がるが，計算コストも大きくなる
 - そのまで木の数を増やさずに，精度を上げたい
+
   →近傍探索(neighbor exploring)のテクニックを使う！
 
 +++
@@ -155,11 +156,12 @@ RP-treeベースのアルゴリズム．
 +++
 ### K-NNグラフの構築
 
-エッジの重みは，t-SNEと同様のアプローチ
-
+エッジの重みは，t-SNEと同様のアプローチ$\vec{x}$
 
 $$p_{j|i} = \frac{\exp(-||\vec{x}_i-\vec{x}_j||^2 / 2\sigma_i^2)}{\sum_{(i,k)\in E}\exp(-||\vec{x}_i-\vec{x}_k||^2/2\sigma_i^2)}$$
+
 $$p_{i|i} = 0$$
+
 $$w_{ij} = \frac{p_{j|i}+p_{i|j}}{2N}$$
 ---
 
