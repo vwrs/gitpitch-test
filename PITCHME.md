@@ -160,9 +160,10 @@ RP-treeベースのアルゴリズム．
 
 $$p_{j|i} = \frac{\exp(-||\vec{x}_i-\vec{x}_j||^2 / 2\sigma_i^2)}
 {\sum_{(i,k) \in E}\exp(-||\vec{x}_i-\vec{x}_k||^2 / 2\sigma_i^2)}$$
-
+and
 $$p_{i|i} = 0$$
 
+としたとき，重み$w$は
 $$w_{ij} = \frac{p_{j|i}+p_{i|j}}{2N}$$
 ---
 
